@@ -8,10 +8,10 @@ public class EnemyGeneratorTop : MonoBehaviour {
     GameObject[] EnemyTypes;
 
     [SerializeField]
-    private float TimeMin = 1.0f;
+    private float TimeMin = 15.0f;
 
     [SerializeField]
-    private float TimeMax = 4.0f;
+    private float TimeMax = 20.0f;
 
     [SerializeField]
     private float EnemyMoveSpeed = 0;
@@ -35,7 +35,12 @@ public class EnemyGeneratorTop : MonoBehaviour {
     // Use this for initialization
     void Start () {
         enemyPositionY = 5.5f;
-	}
+
+        enemyPosition.z = -.006f;
+        enemyPosition.y = enemyPositionY;
+        enemyPosition.x = Random.Range(-10, 10);
+        gameObject.transform.position = enemyPosition;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -46,6 +51,7 @@ public class EnemyGeneratorTop : MonoBehaviour {
 
     void updateEnemyMoveRange(float EnemyMoveRangeMin = -10, float EnemyMoveRangeMax = 10)
     {
+        enemyPosition.z = -.006f;
         enemyPosition.y = enemyPositionY;
         enemyPosition.x = Random.Range(EnemyMoveRangeMin, EnemyMoveRangeMax);
         gameObject.transform.position = enemyPosition;

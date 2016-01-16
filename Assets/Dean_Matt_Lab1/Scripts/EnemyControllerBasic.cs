@@ -15,6 +15,10 @@ public class EnemyControllerBasic : MonoBehaviour {
     private float Magnitude = 0.05f;
     private Vector3 axis;
 
+    // Projectile Game Object Variable
+    [Tooltip("The Game Object used as the projectile")]
+    public EnemyProjectile Bullet;
+
     // Use this for initialization
     void Start ()
     {
@@ -36,6 +40,19 @@ public class EnemyControllerBasic : MonoBehaviour {
         transform.position += transform.up * Time.deltaTime * MoveSpeedX;
         transform.position = transform.position + axis * Mathf.Sin(Time.time * Frequency) * Magnitude;
 
+        DoWeaponFire();
+    }
+
+    int iCounter = 0;
+    void DoWeaponFire()
+    {
+        //yield return new WaitForSeconds(3);
+        if (iCounter == 120)
+        {
+            Instantiate(Bullet, transform.position, transform.rotation);
+            iCounter = 0;
+        }
+        iCounter++;
     }
 
     void OnTriggerEnter (Collider other)

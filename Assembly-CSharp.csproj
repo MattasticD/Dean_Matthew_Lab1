@@ -51,17 +51,24 @@
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\EnemyControllerBasic.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\EnemyGeneratorSide.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\EnemyGeneratorTop.cs" />
+     <Compile Include="Assets\Dean_Matt_Lab1\Scripts\EnemyProjectile.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\HUD.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\HealthIcon.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\LifeIcon.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\Pickup.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\Projectile.cs" />
      <Compile Include="Assets\Dean_Matt_Lab1\Scripts\ShipPlayerController.cs" />
+ <Reference Include="UnityEngine.Advertisements">
+ <HintPath>D:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>D:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>D:/Program Files (x86)/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>

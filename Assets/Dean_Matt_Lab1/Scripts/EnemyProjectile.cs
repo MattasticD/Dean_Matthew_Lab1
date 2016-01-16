@@ -8,7 +8,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Projectile : MonoBehaviour
+public class EnemyProjectile : MonoBehaviour
 {
     #region Variables
     //Used to control how fast the game object moves
@@ -40,6 +40,8 @@ public class Projectile : MonoBehaviour
         GameObject playerShip = GameObject.Find("PlayerShip");
         // Access the player ship's script component by type
         ParentShip = playerShip.GetComponent<ShipPlayerController>();
+
+        Destroy(gameObject, 6.0f);
     }
 
     // Update is called once per frame
@@ -52,15 +54,15 @@ public class Projectile : MonoBehaviour
 
     // Called by the engine when this object collides
     // with another object containing collision
-    void OnTriggerEnter (Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "EnemyShip")
+        if (other.tag == "PlayerShip")
         {
             Destroy(gameObject);
 
-            ParentShip.ModScore (1);
+            ParentShip.ModScore(-1);
 
-            ParentShip.ModEnemyHits (1);
+            ParentShip.ModEnemyHits(-1);
         }
     }
 
@@ -73,6 +75,6 @@ public class Projectile : MonoBehaviour
     // Funtion to identify projectiles when they move on screen
     void OnBecameVisible()
     {
-        
+
     }
 }

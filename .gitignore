@@ -214,3 +214,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.asset
+Library/ShaderCache/f/fd74e8ac094567f9c26ba78f5135108f.bin
+*.bin
+*.sln
+ProjectSettings/ProjectVersion.txt
+Temp/__EditModeScene

@@ -424,6 +424,7 @@ public class ShipPlayerController : MonoBehaviour
 
     void OnTriggerEnter (Collider other)
     {
+        Debug.Log("Nope");
         if (other.tag == "Pickup")
         {
             if(other.name == "Score")
@@ -433,9 +434,10 @@ public class ShipPlayerController : MonoBehaviour
                 Destroy(other.gameObject);
             }
         }
-        else if (other.tag == "EnemyShipTop" || other.tag == "EnemyShipSide")
+        else if (other.tag == "EnemyShip") //Top" || other.tag == "EnemyShipSide")
         {
             ModLives(-1);
+            Debug.Log("Yo");
         }
 
     }

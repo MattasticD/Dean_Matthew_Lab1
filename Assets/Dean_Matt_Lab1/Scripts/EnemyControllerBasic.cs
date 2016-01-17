@@ -10,9 +10,10 @@ public class EnemyControllerBasic : MonoBehaviour {
 
     [SerializeField]
     GameObject[] PickupTypes;
-
-    private float Frequency = 40.0f;
-    private float Magnitude = 0.05f;
+    //[SerializeField]
+    private float Frequency = 3.0f;
+    //[SerializeField]
+    private float Magnitude = 0.1f;
     private Vector3 axis;
 
     // Projectile Game Object Variable
@@ -24,21 +25,30 @@ public class EnemyControllerBasic : MonoBehaviour {
     {
         axis = transform.right;
         // Set the life-span until our object is destroyed
-        Destroy(gameObject, 6.0f);
+        Destroy(gameObject, 10.0f);
         // Find the player ship game object by name
         GameObject playerShip = GameObject.Find("PlayerShip");
         // Access the player ship's script component by type
         PlayerShipCtrl = playerShip.GetComponent<ShipPlayerController>();
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    Vector3 position = new Vector3();
+    float t = 10f;
+
+    // Update is called once per frame
+    void Update ()
     {
         //transform.position +=
         //    transform.up * Time.deltaTime * MoveSpeedX;
 
-        transform.position += transform.up * Time.deltaTime * MoveSpeedX;
-        transform.position = transform.position + axis * Mathf.Sin(Time.time * Frequency) * Magnitude;
+        //transform.position += transform.up * Time.deltaTime * MoveSpeedX;
+        //transform.position = transform.position + axis * Mathf.Cos(Time.time * Frequency) * Magnitude;
+
+        transform.position += transform.up * MoveSpeedX * Time.deltaTime;
+        transform.position = transform.position + axis * Magnitude * Mathf.Cos(t);
+        
+
+        t += Time.deltaTime;
 
         DoWeaponFire();
     }
@@ -47,7 +57,7 @@ public class EnemyControllerBasic : MonoBehaviour {
     void DoWeaponFire()
     {
         //yield return new WaitForSeconds(3);
-        if (iCounter == 120)
+        if (iCounter == 100)
         {
             Instantiate(Bullet, transform.position, transform.rotation);
             iCounter = 0;
@@ -58,7 +68,7 @@ public class EnemyControllerBasic : MonoBehaviour {
     void OnTriggerEnter (Collider other)
     {
         // Hit the player's projectile?
-        if(other.tag == "PlayerProjectile")
+        if(other.tag == "PlayerProjectile" || other.tag == "PlayerProjectileInstaKill")
         {
             //A projectile instant kills us
             Destroy(gameObject);

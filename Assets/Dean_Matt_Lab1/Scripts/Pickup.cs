@@ -11,7 +11,7 @@ public class Pickup : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Destroy(gameObject, 1.0f);
+        Destroy(gameObject, 8.0f);
         GetComponent<Collider>().name = subTypeName;
 	}
 	

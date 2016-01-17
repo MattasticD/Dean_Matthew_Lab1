@@ -34,7 +34,7 @@ public class EnemyGeneratorTop : MonoBehaviour {
     #endregion
     // Use this for initialization
     void Start () {
-        enemyPositionY = 5.5f;
+        enemyPositionY = 8.5f;
 
         enemyPosition.z = -.006f;
         enemyPosition.y = enemyPositionY;

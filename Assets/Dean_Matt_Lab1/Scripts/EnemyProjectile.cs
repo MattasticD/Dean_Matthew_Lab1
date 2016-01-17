@@ -35,13 +35,14 @@ public class EnemyProjectile : MonoBehaviour
         axis = transform.right;
 
         //Set the life-span until our object is destroyed.
-        //Destroy(gameObject, 1.0f);
+        Destroy(gameObject, 3.0f);
         // Find the player ship game object name
         GameObject playerShip = GameObject.Find("PlayerShip");
         // Access the player ship's script component by type
-        ParentShip = playerShip.GetComponent<ShipPlayerController>();
-
-        Destroy(gameObject, 6.0f);
+        if (playerShip.activeInHierarchy)
+        {
+            ParentShip = playerShip.GetComponent<ShipPlayerController>();
+        }
     }
 
     // Update is called once per frame
@@ -60,9 +61,10 @@ public class EnemyProjectile : MonoBehaviour
         {
             Destroy(gameObject);
 
-            ParentShip.ModScore(-1);
+            //ParentShip.ModScore(-1);
 
-            ParentShip.ModEnemyHits(-1);
+            //ParentShip.ModEnemyHits(-1);
+            
         }
     }
 

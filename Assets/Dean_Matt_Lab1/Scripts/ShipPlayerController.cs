@@ -13,12 +13,35 @@ public class ShipPlayerController : MonoBehaviour
 {
     #region Variables
 
+    public GameObject GameOver;
+
     // The maximum lives the player starts with.
     [SerializeField]
     int MaxLives = 3;
 
+    // The maximum lives the player starts with.
+    [SerializeField]
+    int MaxHealth = 6;
+
+    // The maximum lives the player starts with.
+    [SerializeField]
+    int MaxShield = 100;
+
+    // The maximum lives the player starts with.
+    [SerializeField]
+    int MaxAmmo = 1000;
+
     // The current lives remaining for the player.
     private int CurLives = 3;
+
+    // The current lives remaining for the player.
+    private int CurHealth = 6;
+
+    // The current shield remaining for the player.
+    private int CurShield = 100;
+
+    // The current ammo remaining for the player.
+    private int CurAmmo = 1000;
 
     // The number of proectiles shot
     private int numShotsFired = 0;
@@ -28,6 +51,7 @@ public class ShipPlayerController : MonoBehaviour
 
     // The current game score (points earned)
     private int Score;
+
 
     // Determines the screen bounds in relation to the
     // player object. This camera object needs to be populated
@@ -99,6 +123,9 @@ public class ShipPlayerController : MonoBehaviour
     [Tooltip("The Game Object used as the projectile")]
     public Projectile Bullet1;
 
+    [SerializeField]
+    private ProjectileInstaKill BulletInstaKill;
+
     // Used to keep projectile time.
     private float _previousTime;
 
@@ -109,6 +136,8 @@ public class ShipPlayerController : MonoBehaviour
     // Camera Shake Float Variables
     float shake_decay;
     float shake_intensity;
+
+    private bool gameOver = false;
 
     // 
     [SerializeField]
@@ -205,17 +234,13 @@ public class ShipPlayerController : MonoBehaviour
 
     void OnBecameInvisible()
     {
-        Debug.Log("Poof0");
         //var cam = CameraObject;
         var viewportPosition = CameraObject.WorldToViewportPoint(transform.position);
         var newPositon = transform.position;
-        Debug.Log("Poof1");
         if (viewportPosition.x > 1 || viewportPosition.x < 0)
         {
             newPositon.x = -newPositon.x;
-            Debug.Log("Poof");
         }
-        Debug.Log("Poofend");
     }
 
 
@@ -268,12 +293,24 @@ public class ShipPlayerController : MonoBehaviour
         // pressed, we check if enough time has passed.
         FireTimer += Time.deltaTime;
         // Detect if the fire button has been pressed.
+        if (gameOver)
+        {
+            if (Input.GetKey(KeyCode.P))
+            {
+                Application.LoadLevel("Dean_Matt_Lab1");
+            }
+            return;
+        }
+
         if (Input.GetButton("Fire1"))
         {
+            if (CurAmmo <= -1)
+                return;
             if (FireTimer > FireRate)
             {
                 FireTimer = 0;
                 DoWeaponFire();
+                ModAmmo(-1);
                 AudioSource audio = GetComponent<AudioSource>();
                 audio.Play();
             }
@@ -281,13 +318,36 @@ public class ShipPlayerController : MonoBehaviour
         // Multi-Shot Fire Mode
         else if (Input.GetKey(KeyCode.M))
         {
+            if (CurAmmo <= -1)
+                return;
             if (FireTimer > FireRate)
             {
                 FireTimer = 0;
                 DoMultiWeaponFire();
+                ModAmmo(-2);
                 AudioSource audio = GetComponent<AudioSource>();
                 audio.Play();
             }
+        }
+        else if (Input.GetKey(KeyCode.K))
+        {
+            Debug.Log(CurAmmo);
+            if (CurAmmo <= 100)
+                return;
+            if (FireTimer > FireRate)
+            {
+                FireTimer = 0;
+                DoInstaKillFire();
+                ModAmmo(-100);
+                AudioSource audio = GetComponent<AudioSource>();
+                audio.Play();
+                Debug.Log("FireInstaKill");
+            }
+        }
+        else if (Input.GetKey(KeyCode.R))
+        {
+            CurAmmo = MaxAmmo;
+            PlayerHUD.updateAmmo(CurAmmo);
         }
         // Burst Fire Mode
         //else if (Input.GetKey(KeyCode.B))
@@ -332,11 +392,16 @@ public class ShipPlayerController : MonoBehaviour
             Instantiate(Bullet, _bullet2Vector, transform.rotation);
             _previousTime = 10;
         }
-        else if(_previousTime == 2)
+        else if (_previousTime == 2)
         {
             _previousTime += FireTimer;
             Instantiate(Bullet, transform.position, transform.rotation);
         }
+    }
+
+    void DoInstaKillFire()
+    {
+        Instantiate(BulletInstaKill, transform.position, transform.rotation);
     }
 
     // Ship Thruster Activate Function
@@ -386,7 +451,7 @@ public class ShipPlayerController : MonoBehaviour
     }
 
     // Resets player stats at initialization
-    void ResetStats ()
+    void ResetStats()
     {
         numShotsFired = 0;
         numEnemyHits = 0;
@@ -395,50 +460,144 @@ public class ShipPlayerController : MonoBehaviour
         // It is not reset; rather, used as the
         // default value for the current lives count.
         CurLives = MaxLives;
+        CurHealth = MaxHealth;
+        CurShield = MaxShield;
+        CurAmmo = MaxAmmo;
 
         PlayerHUD.CreateLifeIcons(MaxLives);
 
         PlayerHUD.updateLives(CurLives);
+
+        PlayerHUD.CreateHealthIcons(MaxHealth);
+
+        PlayerHUD.updateHealth(CurHealth);
+
+        //PlayerHUD.updateShield(CurShield);
+
+        //PlayerHUD.updateAmmo(CurAmmo);
     }
-    
+
     // Modifies the number of enemis hit
-    public void ModEnemyHits (int _hits)
+    public void ModEnemyHits(int _hits)
     {
         numEnemyHits += _hits;
     }
 
     // Modifies the player's score
-    public void ModScore (int _value)
+    public void ModScore(int _value)
     {
         Score += _value;
         PlayerHUD.updateScore(Score);
     }
 
-    // Modifies the number of lives the player has
-    public void ModLives (int _value)
+    // Modifies the player's score
+    public void ModAmmo(int _value)
     {
-        CurLives += _value;
-
-        PlayerHUD.updateLives(CurLives);
+        CurAmmo += _value;
+        if (CurAmmo <= -1)
+            return;
+        PlayerHUD.updateAmmo(CurAmmo);
     }
 
-    void OnTriggerEnter (Collider other)
+    // Modifies the player's score
+    public void ModShield(int _value)
     {
-        Debug.Log("Nope");
+        CurShield += _value;
+        if (CurShield <= -1)
+            return;
+        PlayerHUD.updateShield(CurShield);
+    }
+
+    // Modifies the number of lives the player has
+    public void ModLives(int _value)
+    {
+        CurLives += _value;
+        if (CurLives <= -1)
+            ResetStats();
+        PlayerHUD.updateLives(CurLives);
+    }
+    // Modifies the amount of health
+    public void ModHealth(int _value)
+    {
+        CurHealth += _value;
+        if (CurHealth <= 0)
+        {
+            ModLives(-1);
+            CurHealth = 6;
+            if (CurLives == 0)
+            {
+                transform.position = new Vector3(0, 1300, 15);
+                gameOver = true;
+                return;
+            }
+            transform.position = new Vector3(0, -3);
+        }
+
+        PlayerHUD.updateHealth(CurHealth);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
         if (other.tag == "Pickup")
         {
-            if(other.name == "Score")
+            if (other.name == "Score")
             {
                 ModScore(5);
-
+                Destroy(other.gameObject);
+            }
+            if (other.name == "Life")
+            {
+                ModLives(1);
+                Destroy(other.gameObject);
+            }
+            if (other.name == "Health")
+            {
+                ModHealth(1);
+                Destroy(other.gameObject);
+            }
+            if (other.name == "Ammo")
+            {
+                ModAmmo(50);
+                Destroy(other.gameObject);
+            }
+            if (other.name == "Shield")
+            {
+                ModShield(10);
+                Destroy(other.gameObject);
+            }
+            if (other.name == "Damage")
+            {
+                ModHealth(-5);
                 Destroy(other.gameObject);
             }
         }
-        else if (other.tag == "EnemyShip") //Top" || other.tag == "EnemyShipSide")
+        else if (other.tag == "EnemyShip")
         {
             ModLives(-1);
-            Debug.Log("Yo");
-        }
+            if (CurShield != MaxShield)
+                ModShield(-CurShield);
 
+            ModHealth((MaxHealth - CurHealth));
+
+            if (CurLives == 0)
+            {
+                transform.position = new Vector3(0, 1300, 15);
+                gameOver = true;
+                GameOver.SetActive(true);
+                return;
+            }
+            transform.position = new Vector3(0, -3);
+        }
+        else if (other.tag == "EnemyProjectile")
+        {
+            if (CurShield == 0)
+            {
+                ModHealth(-1);
+            }
+            else
+            {
+                ModShield(-10);
+            }
+        }
     }
 }

@@ -88,9 +88,20 @@ public class HUD : MonoBehaviour {
         }
     }
 
+
+    public void updateHealth(int numHealthRemaining)
+    {
+        for (int i = 0; i < healthIconInstances.Count; ++i)
+        {
+            bool bActive = i < numHealthRemaining;
+            healthIconInstances[i].gameObject.SetActive(bActive);
+        }
+    }
+
     // Used to update Shield dynamic value
     public void updateShield(int value)
     {
+        //Debug.Log(shieldText);
         // Reset the text mesh's text to the original so
         // the previous value is overwritten with the new one
         shieldTextMesh.text = shieldText;
